@@ -153,9 +153,13 @@ export default function SpinWheel({ items, onResult }: SpinWheelProps) {
       <button
         onClick={spin}
         disabled={spinning || items.length < 2}
-        className="w-full max-w-[300px] py-4 rounded-2xl font-bold text-lg bg-purple-500 text-white disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-all"
+        className={`w-full max-w-[300px] py-4 rounded-2xl font-bold text-base tracking-wide transition-all active:scale-[0.97] disabled:opacity-30 disabled:cursor-not-allowed ${
+          spinning
+            ? "bg-purple-500/30 text-purple-200"
+            : "bg-gradient-to-b from-purple-400 to-purple-700 text-white shadow-[0_4px_0_rgba(0,0,0,0.3),0_0_30px_rgba(168,85,247,0.25)] active:shadow-[0_1px_0_rgba(0,0,0,0.3)] active:translate-y-px"
+        }`}
       >
-        {spinning ? "Dönüyor..." : "🎡 Çevir!"}
+        {spinning ? "Dönüyor…" : "🎡 Çevir!"}
       </button>
     </div>
   );

@@ -1,106 +1,241 @@
 "use client";
 
 import { useState } from "react";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import ResetConfirm from "@/components/ResetConfirm";
+
+type Side = "yazı" | "tura";
+
+function CoinFace({ side }: { side: Side }) {
+  const isYazi = side === "yazı";
+  return (
+    <div
+      className="absolute inset-0 rounded-full flex flex-col items-center justify-center gap-1"
+      style={{
+        backfaceVisibility: "hidden",
+        WebkitBackfaceVisibility: "hidden",
+        transform: isYazi ? undefined : "rotateY(180deg)",
+        background:
+          "radial-gradient(circle at 33% 30%, #fef9c3, #eab308 48%, #92400e 100%)",
+        border: "8px solid",
+        borderColor: "#b45309",
+        boxShadow:
+          "inset 0 3px 10px rgba(255,255,200,0.45), inset 0 -3px 6px rgba(0,0,0,0.2), 0 6px 24px rgba(234,179,8,0.4)",
+      }}
+    >
+      {/* Rim detail */}
+      <div
+        className="absolute inset-[6px] rounded-full"
+        style={{
+          border: "1.5px solid rgba(180,83,9,0.4)",
+          background: "transparent",
+        }}
+      />
+      {/* Main motif */}
+      {isYazi ? (
+        <>
+          {/* Face silhouette */}
+          <svg viewBox="0 0 60 60" width="62" height="62" className="relative z-10">
+            <ellipse cx="30" cy="24" rx="13" ry="14" fill="rgba(0,0,0,0.30)" />
+            <ellipse cx="30" cy="52" rx="18" ry="12" fill="rgba(0,0,0,0.25)" />
+          </svg>
+          <span
+            className="relative z-10 text-[11px] font-black tracking-[0.3em] uppercase"
+            style={{ color: "rgba(0,0,0,0.45)", marginTop: -6 }}
+          >
+            YAZI
+          </span>
+        </>
+      ) : (
+        <>
+          {/* Star motif */}
+          <svg viewBox="0 0 60 60" width="62" height="62" className="relative z-10">
+            <polygon
+              points="30,5 36,22 54,22 40,33 45,50 30,40 15,50 20,33 6,22 24,22"
+              fill="rgba(0,0,0,0.28)"
+            />
+          </svg>
+          <span
+            className="relative z-10 text-[11px] font-black tracking-[0.3em] uppercase"
+            style={{ color: "rgba(0,0,0,0.45)", marginTop: -6 }}
+          >
+            TURA
+          </span>
+        </>
+      )}
+    </div>
+  );
+}
+
+interface CoinProps {
+  result: Side | null;
+  pending: Side | null;
+  flipping: boolean;
+  animKey: number;
+}
+
+function Coin({ result, pending, flipping, animKey }: CoinProps) {
+  const animName = pending === "tura" ? "coin-flip-tura" : "coin-flip-yazi";
+  const staticTransform =
+    !flipping && result === "tura" ? "rotateY(180deg)" : "rotateY(0deg)";
+
+  return (
+    <div className="flex justify-center" style={{ perspective: "700px" }}>
+      <div
+        key={animKey}
+        style={{
+          width: 180,
+          height: 180,
+          position: "relative",
+          transformStyle: "preserve-3d",
+          animation: flipping ? `${animName} 1.1s cubic-bezier(0.4,0,0.2,1) forwards` : "none",
+          transform: flipping ? undefined : staticTransform,
+          transition: flipping ? "none" : "transform 0.4s ease",
+          filter: "drop-shadow(0 16px 32px rgba(234,179,8,0.3))",
+        }}
+      >
+        <CoinFace side="yazı" />
+        <CoinFace side="tura" />
+      </div>
+    </div>
+  );
+}
 
 export default function YaziTuraPage() {
-  const [result, setResult] = useState<"yazı" | "tura" | null>(null);
+  const [counts, setCounts, clearCounts] = useLocalStorage<Record<Side, number>>(
+    "rastla_coin_counts",
+    { yazı: 0, tura: 0 }
+  );
+  const [result, setResult] = useState<Side | null>(null);
+  const [pending, setPending] = useState<Side | null>(null);
   const [flipping, setFlipping] = useState(false);
   const [animKey, setAnimKey] = useState(0);
-  const [counts, setCounts] = useState({ yazı: 0, tura: 0 });
-
-  const flip = () => {
-    if (flipping) return;
-    setFlipping(true);
-    setAnimKey((k) => k + 1);
-    setTimeout(() => {
-      const landed = Math.random() < 0.5 ? "yazı" : "tura";
-      setResult(landed);
-      setCounts((c) => ({ ...c, [landed]: c[landed] + 1 }));
-      setFlipping(false);
-    }, 1000);
-  };
+  const [showReset, setShowReset] = useState(false);
 
   const total = counts.yazı + counts.tura;
 
-  return (
-    <div className="p-5 pt-10">
-      <header className="mb-8">
-        <div className="text-4xl mb-2">🪙</div>
-        <h1 className="text-2xl font-bold">Yazı / Tura</h1>
-        <p className="text-white/40 text-sm mt-1">Madeni parayı fırlat</p>
-      </header>
+  const flip = () => {
+    if (flipping) return;
+    const landed: Side = Math.random() < 0.5 ? "yazı" : "tura";
+    setPending(landed);
+    setFlipping(true);
+    setAnimKey((k) => k + 1);
+    setTimeout(() => {
+      setResult(landed);
+      setCounts((c) => ({ ...c, [landed]: c[landed] + 1 }));
+      setFlipping(false);
+    }, 1100);
+  };
 
-      {/* Coin */}
-      <div className="flex justify-center mb-8" style={{ perspective: "600px" }}>
-        <div
-          key={animKey}
-          className={`w-40 h-40 rounded-full flex items-center justify-center text-7xl select-none shadow-2xl border-4 ${
-            flipping
-              ? "animate-flip-coin border-yellow-400/50"
-              : result
-              ? "border-yellow-400/60 animate-bounce-in"
-              : "border-yellow-400/20"
-          }`}
-          style={{
-            background:
-              "radial-gradient(circle at 35% 35%, #fef08a, #ca8a04 60%, #78350f)",
-          }}
-        >
-          {flipping ? "🪙" : result === "yazı" ? "👤" : result === "tura" ? "⭐" : "🪙"}
+  const handleReset = () => {
+    clearCounts();
+    setResult(null);
+    setPending(null);
+    setShowReset(false);
+  };
+
+  return (
+    <div className="p-5 pt-8">
+      {/* Header */}
+      <div className="relative mb-8">
+        <div className="absolute -top-4 left-0 w-48 h-48 bg-yellow-400/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative flex items-start justify-between">
+          <div>
+            <div className="text-5xl mb-2">🪙</div>
+            <h1 className="text-2xl font-bold tracking-tight">Yazı / Tura</h1>
+            <p className="text-white/40 text-sm mt-1">Madeni parayı fırlat</p>
+          </div>
+          {total > 0 && (
+            <button
+              onClick={() => setShowReset(true)}
+              className="mt-1 px-3 py-1.5 rounded-xl text-xs text-white/30 border border-white/[0.06] hover:border-white/15 hover:text-white/50 transition-all"
+            >
+              Sıfırla
+            </button>
+          )}
         </div>
       </div>
 
+      {/* Coin */}
+      <Coin result={result} pending={pending} flipping={flipping} animKey={animKey} />
+
       {/* Result label */}
-      {result && !flipping && (
-        <div className="text-center mb-6 animate-slide-up">
-          <div className="text-white/40 text-xs uppercase tracking-widest mb-1">Sonuç</div>
-          <div className="text-3xl font-bold text-yellow-300 capitalize">{result.toUpperCase()}</div>
-        </div>
-      )}
+      <div className="mt-5 text-center min-h-8">
+        {!flipping && result && (
+          <div className="animate-slide-up">
+            <div className="text-white/35 text-[10px] uppercase tracking-[0.2em] mb-0.5">Sonuç</div>
+            <div className="text-2xl font-black text-yellow-300 tracking-widest uppercase">
+              {result}
+            </div>
+          </div>
+        )}
+        {flipping && (
+          <div className="text-white/30 text-sm animate-pulse-scale">Uçuyor…</div>
+        )}
+      </div>
 
       {/* Flip button */}
       <button
         onClick={flip}
         disabled={flipping}
-        className="w-full py-4 rounded-2xl font-bold text-lg bg-yellow-400 text-black disabled:opacity-40 active:scale-95 transition-all"
+        className={`w-full mt-6 py-4 rounded-2xl font-bold text-base tracking-wide transition-all active:scale-[0.97] disabled:opacity-40 ${
+          flipping
+            ? "bg-yellow-400/20 text-yellow-200"
+            : "bg-gradient-to-b from-yellow-300 to-yellow-500 text-black shadow-[0_4px_0_rgba(0,0,0,0.3),0_0_30px_rgba(234,179,8,0.25)] active:shadow-[0_1px_0_rgba(0,0,0,0.3)] active:translate-y-px"
+        }`}
       >
-        {flipping ? "Uçuyor..." : "🪙 Fırlat!"}
+        🪙 Fırlat!
       </button>
 
       {/* Stats */}
       {total > 0 && (
-        <div className="mt-6 bg-white/[0.04] border border-white/[0.08] rounded-2xl p-4">
-          <div className="text-xs text-white/30 uppercase tracking-widest mb-3">İstatistik — {total} atış</div>
-          <div className="flex gap-3">
+        <div
+          className="mt-6 rounded-2xl p-4"
+          style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
+        >
+          <div className="text-[10px] text-white/25 uppercase tracking-[0.15em] mb-4">
+            İstatistik — {total} atış
+          </div>
+          <div className="flex gap-3 mb-4">
             {(["yazı", "tura"] as const).map((side) => (
-              <div key={side} className="flex-1 bg-white/[0.04] rounded-xl p-3 text-center">
-                <div className="text-2xl mb-1">{side === "yazı" ? "👤" : "⭐"}</div>
-                <div className="text-xl font-bold">{counts[side]}</div>
-                <div className="text-xs text-white/40 capitalize">{side}</div>
-                <div className="text-xs text-yellow-400 mt-1">
+              <div
+                key={side}
+                className={`flex-1 rounded-xl p-3 text-center transition-all ${
+                  result === side
+                    ? "bg-yellow-400/10 border border-yellow-400/25"
+                    : "bg-white/[0.03] border border-white/[0.05]"
+                }`}
+              >
+                <div className="text-2xl mb-1.5">
+                  {side === "yazı" ? "👤" : "⭐"}
+                </div>
+                <div className="text-xl font-black tabular-nums">{counts[side]}</div>
+                <div className="text-[10px] text-white/35 uppercase tracking-wide mt-0.5">{side}</div>
+                <div className="text-xs text-yellow-400 font-semibold mt-1 tabular-nums">
                   {total > 0 ? Math.round((counts[side] / total) * 100) : 0}%
                 </div>
               </div>
             ))}
           </div>
           {/* Progress bar */}
-          <div className="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
+          <div className="h-2 rounded-full overflow-hidden bg-white/[0.06]">
             <div
-              className="h-full bg-yellow-400 rounded-full transition-all duration-500"
-              style={{ width: total > 0 ? `${(counts.yazı / total) * 100}%` : "50%" }}
+              className="h-full rounded-full transition-all duration-700"
+              style={{
+                width: `${total > 0 ? (counts.yazı / total) * 100 : 50}%`,
+                background: "linear-gradient(90deg, #fde047, #eab308)",
+              }}
             />
+          </div>
+          <div className="flex justify-between mt-1">
+            <span className="text-[10px] text-white/25">Yazı</span>
+            <span className="text-[10px] text-white/25">Tura</span>
           </div>
         </div>
       )}
 
-      {/* Reset */}
-      {total > 0 && (
-        <button
-          onClick={() => { setCounts({ yazı: 0, tura: 0 }); setResult(null); }}
-          className="mt-3 w-full py-2.5 rounded-xl text-sm text-white/30 hover:text-white/60 transition-colors"
-        >
-          Sıfırla
-        </button>
+      {showReset && (
+        <ResetConfirm onConfirm={handleReset} onCancel={() => setShowReset(false)} />
       )}
     </div>
   );
