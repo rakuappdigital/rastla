@@ -158,7 +158,7 @@ export default function LotteryJar({ names, drawing, winner }: Props) {
       <div className="absolute top-0 left-1/2 -translate-x-1/2" style={{ width: W, height: H, overflow: "hidden" }}>
         <div style={{ clipPath: "path('M 56 48 L 204 48 L 220 72 L 242 96 L 242 272 Q 242 290 224 290 L 36 290 Q 18 290 18 272 L 18 96 L 40 72 Z')" }}>
           {displayBalls.map((ball, i) => (
-            <div key={(ball.name || i) + i} className="absolute flex items-center justify-center rounded-full transition-none"
+            <div key={`${ball.name || ""}${i}`} className="absolute flex items-center justify-center rounded-full transition-none"
               style={{
                 width: BALL_R * 2, height: BALL_R * 2,
                 left: ball.x - BALL_R, top: ball.y - BALL_R,
