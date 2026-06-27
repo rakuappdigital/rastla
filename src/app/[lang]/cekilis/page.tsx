@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Image from "next/image";
 import LineInput from "@/components/LineInput";
 import LotteryJar from "@/components/LotteryJar";
 import ResetConfirm from "@/components/ResetConfirm";
@@ -75,9 +76,20 @@ export default function CekilisPage() {
         rows={5}
       />
 
-      {names.length >= 2 && (
+      {names.length >= 2 ? (
         <div className="mt-6">
           <LotteryJar names={names} drawing={drawing} winner={winner} />
+        </div>
+      ) : (
+        <div className="flex justify-center mt-4 mb-2">
+          <Image
+            src="/images/jar.png"
+            alt="lottery jar"
+            width={220}
+            height={220}
+            className="animate-float drop-shadow-2xl"
+            priority
+          />
         </div>
       )}
 

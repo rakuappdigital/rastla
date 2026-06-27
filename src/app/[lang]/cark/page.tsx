@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import SpinWheel from "@/components/SpinWheel";
 import LineInput from "@/components/LineInput";
 import ResetConfirm from "@/components/ResetConfirm";
@@ -51,8 +52,15 @@ export default function CarkPage() {
         {items.length >= 2 ? (
           <SpinWheel items={items} onResult={handleResult} spinLabel={d.wheel.spin} spinningLabel={d.wheel.spinning} />
         ) : (
-          <div className="flex flex-col items-center gap-3 py-12 text-white/20">
-            <div className="text-6xl animate-float">🎡</div>
+          <div className="flex flex-col items-center gap-2 py-4 text-white/30">
+            <Image
+              src="/images/wheel.png"
+              alt="spin wheel"
+              width={220}
+              height={220}
+              className="animate-float drop-shadow-2xl"
+              priority
+            />
             <p className="text-sm">{d.wheel.minWarning}</p>
           </div>
         )}
