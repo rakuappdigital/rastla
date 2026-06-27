@@ -11,9 +11,11 @@ const COLORS = [
 interface SpinWheelProps {
   items: string[];
   onResult: (winner: string) => void;
+  spinLabel?: string;
+  spinningLabel?: string;
 }
 
-export default function SpinWheel({ items, onResult }: SpinWheelProps) {
+export default function SpinWheel({ items, onResult, spinLabel = "🎡 Çevir!", spinningLabel = "Dönüyor…" }: SpinWheelProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const angleRef = useRef(0);
   const rafRef = useRef<number>(0);
@@ -159,7 +161,7 @@ export default function SpinWheel({ items, onResult }: SpinWheelProps) {
             : "bg-gradient-to-b from-purple-400 to-purple-700 text-white shadow-[0_4px_0_rgba(0,0,0,0.3),0_0_30px_rgba(168,85,247,0.25)] active:shadow-[0_1px_0_rgba(0,0,0,0.3)] active:translate-y-px"
         }`}
       >
-        {spinning ? "Dönüyor…" : "🎡 Çevir!"}
+        {spinning ? spinningLabel : spinLabel}
       </button>
     </div>
   );

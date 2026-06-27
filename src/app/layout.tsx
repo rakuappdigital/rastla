@@ -7,12 +7,12 @@ const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 
 export const metadata: Metadata = {
   title: "Rastla",
-  description: "Çekiliş, çark, zar, yazı tura ve takım kurucu — hepsi bir arada",
+  description: "Raffle, wheel, dice, coin flip and team builder",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr" className={geist.variable}>
+    <html className={geist.variable}>
       <body className="bg-[#0a0a0f] text-white font-[var(--font-geist)] antialiased">
         <div className="max-w-md mx-auto min-h-screen pb-24 relative">
           {children}
