@@ -58,13 +58,11 @@ export default function ZarPage() {
   const [animKey, setAnimKey] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Keep display in sync with dice count when not rolling
+  // Clear dice only when count changes
   useEffect(() => {
-    if (!shaking) {
-      setFinalValues([]);
-      setDisplayValues([]);
-    }
-  }, [diceCount, shaking]);
+    setFinalValues([]);
+    setDisplayValues([]);
+  }, [diceCount]);
 
   const roll = () => {
     if (shaking) return;
