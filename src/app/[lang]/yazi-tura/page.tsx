@@ -8,65 +8,52 @@ import ResetConfirm from "@/components/ResetConfirm";
 
 type Side = "heads" | "tails";
 
-function CoinFace({ side }: { side: Side }) {
-  return (
-    <div
-      className="absolute inset-0"
-      style={{
-        backfaceVisibility: "hidden",
-        WebkitBackfaceVisibility: "hidden",
-        transform: side === "tails" ? "rotateY(180deg)" : undefined,
-        /* shadow burada güvenli — kendi yüzüne ait */
-        filter: "drop-shadow(0 16px 32px rgba(234,179,8,0.35))",
-      }}
-    >
-      <Image
-        src={side === "heads" ? "/images/coin-h.png" : "/images/coin-t.png"}
-        alt={side}
-        fill
-        className="object-contain"
-        priority
-      />
-    </div>
-  );
-}
+const TOTAL_MS  = 1200;
+const SWAP_MS   = 900; // %75 — scaleX sıfıra yakın olduğu an
 
 export default function YaziTuraPage() {
   const d = useDict();
   const [counts, setCounts, clearCounts] = useLocalStorage<Record<Side, number>>(
     "rastla_coin_counts", { heads: 0, tails: 0 }
   );
-  const [result, setResult] = useState<Side | null>(null);
-  const [pending, setPending] = useState<Side | null>(null);
-  const [flipping, setFlipping] = useState(false);
-  const [animKey, setAnimKey] = useState(0);
-  const [showReset, setShowReset] = useState(false);
+
+  const [result,      setResult]      = useState<Side | null>(null);
+  const [visibleSide, setVisibleSide] = useState<Side>("heads");
+  const [flipping,    setFlipping]    = useState(false);
+  const [animKey,     setAnimKey]     = useState(0);
+  const [showReset,   setShowReset]   = useState(false);
 
   const total = counts.heads + counts.tails;
 
   const flip = () => {
     if (flipping) return;
     const landed: Side = Math.random() < 0.5 ? "heads" : "tails";
-    setPending(landed);
+
     setFlipping(true);
     setAnimKey((k) => k + 1);
+
+    // Görsel, animasyonun %75'inde (scaleX ≈ 0) değişir — fark edilmez
+    setTimeout(() => setVisibleSide(landed), SWAP_MS);
+
     setTimeout(() => {
       setResult(landed);
       setCounts((c) => ({ ...c, [landed]: c[landed] + 1 }));
       setFlipping(false);
-    }, 1100);
+    }, TOTAL_MS);
   };
 
   const handleReset = () => {
-    clearCounts(); setResult(null); setPending(null); setShowReset(false);
+    clearCounts();
+    setResult(null);
+    setVisibleSide("heads");
+    setShowReset(false);
   };
 
-  const animName = pending === "tails" ? "coin-flip-tura" : "coin-flip-yazi";
-  const staticTransform = !flipping && result === "tails" ? "rotateY(180deg)" : "rotateY(0deg)";
   const resultLabel = result === "heads" ? d.coin.heads : result === "tails" ? d.coin.tails : null;
 
   return (
     <div className="p-5 pt-8">
+
       {/* Header */}
       <div className="relative mb-8">
         <div className="absolute -top-4 left-0 w-48 h-48 bg-yellow-400/10 rounded-full blur-3xl pointer-events-none" />
@@ -87,42 +74,40 @@ export default function YaziTuraPage() {
         </div>
       </div>
 
-      {/* Coin */}
-      <div className="flex justify-center" style={{ perspective: "800px" }}>
-        <div className="relative">
-          {/* Glow under coin */}
+      {/* Coin — tek görsel, JS swap ile yüz değişimi */}
+      <div className="flex justify-center">
+        <div className="relative" style={{ width: 220, height: 220 }}>
+          {/* Glow halo — 3D container dışında, safe */}
           <div
-            className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-40 h-8 rounded-full blur-xl transition-opacity duration-300"
+            className="absolute inset-0 rounded-full pointer-events-none transition-opacity duration-300"
             style={{
-              background: "radial-gradient(ellipse, rgba(234,179,8,0.5) 0%, transparent 70%)",
-              opacity: flipping ? 0.8 : 0.4,
+              boxShadow: `0 0 60px rgba(234,179,8,${flipping ? "0.45" : "0.2"})`,
             }}
           />
-
-          {/* 3D coin container — filter burada OLMAMALI, preserve-3d'yi ezer */}
           <div
             key={animKey}
             style={{
               width: 220,
               height: 220,
               position: "relative",
-              transformStyle: "preserve-3d",
-              animation: flipping
-                ? `${animName} 1.1s cubic-bezier(0.4,0,0.2,1) forwards`
-                : "none",
-              transform: flipping ? undefined : staticTransform,
-              transition: flipping ? "none" : "transform 0.4s ease",
+              animation: flipping ? `coin-toss ${TOTAL_MS}ms ease-in-out forwards` : "none",
+              filter: "drop-shadow(0 16px 28px rgba(180,83,9,0.5))",
             }}
           >
-            <CoinFace side="heads" />
-            <CoinFace side="tails" />
+            <Image
+              src={`/images/coin-${visibleSide === "heads" ? "h" : "t"}.png`}
+              alt={visibleSide}
+              fill
+              className="object-contain"
+              priority
+            />
           </div>
         </div>
       </div>
 
       {/* Result label */}
-      <div className="mt-6 text-center min-h-8">
-        {!flipping && resultLabel && (
+      <div className="mt-5 text-center min-h-8">
+        {!flipping && resultLabel ? (
           <div className="animate-slide-up">
             <div className="text-white/35 text-[10px] uppercase tracking-[0.2em] mb-0.5">
               {d.coin.resultLabel}
@@ -131,10 +116,9 @@ export default function YaziTuraPage() {
               {resultLabel}
             </div>
           </div>
-        )}
-        {flipping && (
+        ) : flipping ? (
           <div className="text-white/30 text-sm animate-pulse-scale">{d.coin.flipping}</div>
-        )}
+        ) : null}
       </div>
 
       {/* Flip button */}
@@ -154,30 +138,22 @@ export default function YaziTuraPage() {
       {total > 0 && (
         <div
           className="mt-6 rounded-2xl p-4"
-          style={{
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(255,255,255,0.07)",
-          }}
+          style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
         >
           <div className="text-[10px] text-white/25 uppercase tracking-[0.15em] mb-4">
             {d.coin.statsLabel} — {total} {d.coin.flipsUnit}
           </div>
+
           <div className="flex gap-3 mb-4">
             {(["heads", "tails"] as const).map((side) => (
               <div
                 key={side}
-                className={`flex-1 rounded-xl p-3 text-center transition-all overflow-hidden relative ${
-                  result === side
-                    ? "border border-yellow-400/25"
-                    : "border border-white/[0.05]"
-                }`}
+                className="flex-1 rounded-xl p-3 text-center transition-all"
                 style={{
-                  background: result === side
-                    ? "rgba(234,179,8,0.08)"
-                    : "rgba(255,255,255,0.03)",
+                  background: result === side ? "rgba(234,179,8,0.08)" : "rgba(255,255,255,0.03)",
+                  border: result === side ? "1px solid rgba(234,179,8,0.25)" : "1px solid rgba(255,255,255,0.05)",
                 }}
               >
-                {/* Mini coin preview */}
                 <div className="relative w-10 h-10 mx-auto mb-2">
                   <Image
                     src={`/images/coin-${side === "heads" ? "h" : "t"}.png`}
@@ -197,7 +173,6 @@ export default function YaziTuraPage() {
             ))}
           </div>
 
-          {/* Progress bar */}
           <div className="h-2 rounded-full overflow-hidden bg-white/[0.06]">
             <div
               className="h-full rounded-full transition-all duration-700"
