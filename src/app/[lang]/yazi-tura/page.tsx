@@ -16,6 +16,8 @@ function CoinFace({ side }: { side: Side }) {
         backfaceVisibility: "hidden",
         WebkitBackfaceVisibility: "hidden",
         transform: side === "tails" ? "rotateY(180deg)" : undefined,
+        /* shadow burada güvenli — kendi yüzüne ait */
+        filter: "drop-shadow(0 16px 32px rgba(234,179,8,0.35))",
       }}
     >
       <Image
@@ -97,7 +99,7 @@ export default function YaziTuraPage() {
             }}
           />
 
-          {/* 3D coin container */}
+          {/* 3D coin container — filter burada OLMAMALI, preserve-3d'yi ezer */}
           <div
             key={animKey}
             style={{
@@ -110,7 +112,6 @@ export default function YaziTuraPage() {
                 : "none",
               transform: flipping ? undefined : staticTransform,
               transition: flipping ? "none" : "transform 0.4s ease",
-              filter: `drop-shadow(0 20px 40px rgba(234,179,8,${flipping ? "0.5" : "0.25"}))`,
             }}
           >
             <CoinFace side="heads" />
