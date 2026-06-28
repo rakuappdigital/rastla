@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "ios": "next build && ./node_modules/.bin/cap sync ios"
   },
   "dependencies": {
     "@capacitor/cli": "^8.4.1",
