@@ -73,21 +73,16 @@
   50%     { transform: scale(1.04); }
 }
 
-/* Coin toss — scaleX sıfıra düşünce src swap yapılır, tekrar açılır */
-@keyframes coin-toss {
-  0%   { transform: scaleX(1)    scaleY(1); }
-  8%   { transform: scaleX(0.04) scaleY(1.03); }
-  16%  { transform: scaleX(1)    scaleY(1); }
-  25%  { transform: scaleX(0.04) scaleY(1.03); }
-  33%  { transform: scaleX(1)    scaleY(1); }
-  42%  { transform: scaleX(0.04) scaleY(1.03); }
-  50%  { transform: scaleX(1)    scaleY(1); }
-  58%  { transform: scaleX(0.04) scaleY(1.03); }
-  66%  { transform: scaleX(1)    scaleY(1); }
-  75%  { transform: scaleX(0.04) scaleY(1.03); } /* ← swap point */
-  84%  { transform: scaleX(1)    scaleY(1); }
-  93%  { transform: scaleX(0.97) scaleY(1); }
-  100% { transform: scaleX(1)    scaleY(1); }
+/* Coin flip 3D — filter YOK, preserve-3d temiz çalışır
+   yazı → 1440deg (4×360 = 0deg, heads yüzü görünür)
+   tura  → 1620deg (4.5×360 = 180deg, tails yüzü görünür)        */
+@keyframes coin-flip-yazi {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(1440deg); }
+}
+@keyframes coin-flip-tura {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(1620deg); }
 }
 
 .animate-bounce-in   { animation: bounce-in  0.5s cubic-bezier(0.36,0.07,0.19,0.97) both; }
