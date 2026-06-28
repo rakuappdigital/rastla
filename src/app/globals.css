@@ -11,10 +11,28 @@ input, textarea, select {
   font-size: 16px !important;
 }
 
-/* Safe area değişkenleri */
-:root {
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
+/* ── Tema değişkenleri ── */
+:root, [data-theme="dark"] {
+  --c-bg:         #0a0a0f;
+  --c-surface:    rgba(255,255,255,0.04);
+  --c-border:     rgba(255,255,255,0.07);
+  --c-text:       #ffffff;
+  --c-text-muted: rgba(255,255,255,0.4);
+  --c-nav:        rgba(10,10,16,0.94);
+}
+
+[data-theme="light"] {
+  --c-bg:         #f0f0f5;
+  --c-surface:    rgba(0,0,0,0.04);
+  --c-border:     rgba(0,0,0,0.08);
+  --c-text:       #0a0a0f;
+  --c-text-muted: rgba(10,10,15,0.45);
+  --c-nav:        rgba(240,240,245,0.94);
+}
+
+body {
+  background: var(--c-bg) !important;
+  color: var(--c-text) !important;
 }
 
 @keyframes bounce-in {

@@ -123,10 +123,6 @@ export default function Nav() {
 
   const segments = path.split("/");
   const lang = segments[1] || "tr";
-  const otherLang = lang === "tr" ? "en" : "tr";
-  const otherPath = segments.length > 2
-    ? `/${otherLang}/${segments.slice(2).join("/")}`
-    : `/${otherLang}`;
 
   const tabs: { slug: string; label: string; Icon: IconComponent }[] = [
     { slug: "cekilis",   label: d.nav.raffle, Icon: RaffleIcon },
@@ -182,22 +178,6 @@ export default function Nav() {
           );
         })}
 
-        {/* Language switcher */}
-        <Link
-          href={otherPath}
-          className="flex flex-col items-center justify-center gap-1 px-2 py-3 transition-colors border-l border-white/[0.05]"
-          style={{ color: "rgba(255,255,255,0.28)" }}
-        >
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <circle cx="9" cy="9" r="8" stroke="currentColor" strokeWidth="1.3" />
-            <ellipse cx="9" cy="9" rx="4.5" ry="8" stroke="currentColor" strokeWidth="1.3" />
-            <line x1="1.5" y1="6.5" x2="16.5" y2="6.5" stroke="currentColor" strokeWidth="1.3" />
-            <line x1="1.5" y1="11.5" x2="16.5" y2="11.5" stroke="currentColor" strokeWidth="1.3" />
-          </svg>
-          <span className="text-[9px] font-bold uppercase tracking-wide">
-            {otherLang}
-          </span>
-        </Link>
       </div>
     </nav>
   );

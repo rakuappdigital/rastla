@@ -50,7 +50,19 @@ export default function TakimPage() {
         <div className="absolute -top-4 left-0 w-48 h-48 bg-green-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative flex items-start justify-between">
           <div>
-            <div className="text-5xl mb-2">👥</div>
+            <svg width="56" height="52" viewBox="0 0 56 52" fill="none" className="mb-3">
+              {/* Sol kişi */}
+              <circle cx="10" cy="13" r="7" fill="#3b82f6" opacity="0.7"/>
+              <path d="M 1 38 Q 1 28 10 28 Q 19 28 19 38" fill="#3b82f6" opacity="0.5"/>
+              {/* Sağ kişi */}
+              <circle cx="46" cy="13" r="7" fill="#ef4444" opacity="0.7"/>
+              <path d="M 37 38 Q 37 28 46 28 Q 55 28 55 38" fill="#ef4444" opacity="0.5"/>
+              {/* Orta kişi (öne çıkmış) */}
+              <circle cx="28" cy="11" r="9" fill="#22c55e"/>
+              <path d="M 17 44 Q 17 32 28 32 Q 39 32 39 44" fill="#22c55e" opacity="0.85"/>
+              {/* Bağ çizgisi */}
+              <path d="M 17 36 Q 28 48 39 36" stroke="rgba(255,255,255,0.15)" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+            </svg>
             <h1 className="text-2xl font-bold tracking-tight">{d.teams.title}</h1>
             <p className="text-white/40 text-sm mt-1">{d.teams.subtitle}</p>
           </div>
