@@ -6,7 +6,7 @@ import Nav from "@/components/Nav";
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 
 export const metadata: Metadata = {
-  title: "Rastla",
+  title: "Luckura",
   description: "Raffle, wheel, dice, coin flip and team builder",
 };
 

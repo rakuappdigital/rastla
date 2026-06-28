@@ -2,7 +2,7 @@ import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
   appId: "com.rakuappdigital.rastla",
-  appName: "Rastla",
+  appName: "Luckura",
   webDir: "out",
   ios: {
     contentInset: "always",          // Safe area (notch/home bar) için
