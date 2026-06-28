@@ -72,7 +72,6 @@ export default function CekilisPage() {
         placeholder={d.raffle.placeholder}
         label={d.raffle.label}
         badge={names.length > 0 ? `${names.length} ${d.raffle.people}` : undefined}
-        rows={5}
       />
 
       <div className="mt-6">

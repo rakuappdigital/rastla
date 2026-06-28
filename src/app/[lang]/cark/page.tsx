@@ -44,7 +44,6 @@ export default function CarkPage() {
         placeholder={d.wheel.placeholder}
         label={d.wheel.label}
         badge={items.length > 0 ? `${items.length} ${d.wheel.slices}` : undefined}
-        rows={4}
       />
 
       <div className="mt-6">

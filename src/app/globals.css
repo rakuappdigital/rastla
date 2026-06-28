@@ -24,15 +24,40 @@ input, textarea, select {
 [data-theme="light"] {
   --c-bg:         #f0f0f5;
   --c-surface:    rgba(0,0,0,0.04);
-  --c-border:     rgba(0,0,0,0.08);
+  --c-border:     rgba(0,0,0,0.09);
   --c-text:       #0a0a0f;
-  --c-text-muted: rgba(10,10,15,0.45);
+  --c-text-muted: rgba(10,10,15,0.5);
   --c-nav:        rgba(240,240,245,0.94);
+  color-scheme: light;
 }
 
 body {
   background: var(--c-bg) !important;
   color: var(--c-text) !important;
+}
+
+/* Açık temada hardcoded white yazıları karart */
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] p,
+[data-theme="light"] span:not([style]),
+[data-theme="light"] label,
+[data-theme="light"] div:not([style]) {
+  color: inherit;
+}
+
+[data-theme="light"] input,
+[data-theme="light"] textarea {
+  color: #0a0a0f !important;
+}
+
+/* White opacity metinler — açık temada koyu */
+[data-theme="light"] [class*="text-white"] {
+  color: rgba(10,10,15,0.85) !important;
+}
+[data-theme="light"] [class*="text-white\/"] {
+  color: rgba(10,10,15,0.5) !important;
 }
 
 @keyframes bounce-in {

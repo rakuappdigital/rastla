@@ -80,7 +80,6 @@ export default function TakimPage() {
         placeholder={d.teams.placeholder}
         label={d.teams.label}
         badge={names.length > 0 ? `${names.length} ${d.teams.people}` : undefined}
-        rows={5}
       />
 
       <div className="rounded-2xl p-4 mt-4 mb-5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
