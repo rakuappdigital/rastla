@@ -18,19 +18,46 @@ export default function ResetConfirm({
   onCancel,
 }: Props) {
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end justify-center p-4" onClick={onCancel}>
-      <div className="w-full max-w-md bg-[#16162a] border border-white/10 rounded-3xl p-6 animate-slide-up shadow-2xl" onClick={(e) => e.stopPropagation()}>
-        <div className="text-3xl mb-3">🗑️</div>
-        <h3 className="font-bold text-lg mb-1">{title}</h3>
-        <p className="text-white/40 text-sm mb-6">{message}</p>
-        <div className="flex gap-3">
-          <button onClick={onCancel} className="flex-1 py-3.5 rounded-2xl bg-white/[0.05] border border-white/10 text-sm text-white/60 font-semibold active:scale-95 transition-all">
-            {cancelLabel}
-          </button>
-          <button onClick={onConfirm} className="flex-1 py-3.5 rounded-2xl bg-red-500/15 border border-red-500/30 text-red-400 text-sm font-bold active:scale-95 transition-all">
-            {confirmLabel}
-          </button>
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center"
+      style={{ background: "rgba(0,0,0,0.55)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}
+      onClick={onCancel}
+    >
+      <div
+        className="w-full max-w-md animate-slide-up mb-6 mx-4"
+        style={{
+          background: "rgba(18,18,26,0.98)",
+          border: "1px solid rgba(255,255,255,0.07)",
+          borderRadius: 20,
+          overflow: "hidden",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Text block */}
+        <div className="px-6 pt-6 pb-5">
+          <p className="text-white/90 font-semibold text-base mb-1 tracking-tight">{title}</p>
+          <p className="text-white/35 text-sm leading-relaxed">{message}</p>
         </div>
+
+        {/* Divider */}
+        <div style={{ height: 1, background: "rgba(255,255,255,0.07)" }} />
+
+        {/* Buttons — stacked, iOS action sheet style */}
+        <button
+          onClick={onConfirm}
+          className="w-full py-4 text-red-400 text-sm font-semibold tracking-wide transition-colors active:bg-white/[0.04]"
+        >
+          {confirmLabel}
+        </button>
+
+        <div style={{ height: 1, background: "rgba(255,255,255,0.07)" }} />
+
+        <button
+          onClick={onCancel}
+          className="w-full py-4 text-white/40 text-sm tracking-wide transition-colors active:bg-white/[0.04]"
+        >
+          {cancelLabel}
+        </button>
       </div>
     </div>
   );
