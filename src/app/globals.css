@@ -1,5 +1,22 @@
 @import "tailwindcss";
 
+/* iOS native hissi */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Input zoom'u engelle — font-size mutlaka 16px+ */
+input, textarea, select {
+  font-size: 16px !important;
+}
+
+/* Safe area değişkenleri */
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 @keyframes bounce-in {
   0%   { transform: scale(0.3); opacity: 0; }
   50%  { transform: scale(1.08); }

@@ -144,6 +144,7 @@ export default function Nav() {
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
         borderTop: "1px solid rgba(255,255,255,0.06)",
+        paddingBottom: "env(safe-area-inset-bottom)",
       }}
     >
       <div className="max-w-md mx-auto flex">

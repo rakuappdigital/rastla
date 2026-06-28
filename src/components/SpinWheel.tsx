@@ -15,12 +15,11 @@ const SEG_COLORS = [
   ["#8B5CF6", "#6d28d9"],
 ];
 
-const SIZE = 320;
-const CX = SIZE / 2;
-const CY = SIZE / 2;
-const R_OUTER = CX - 4;   // gold ring outer
-const R_WHEEL = CX - 18;  // actual wheel
-const R_CENTER = 22;
+// Ekran genişliğine göre hesaplanır — mount'ta belirlenir
+const getSize = () =>
+  typeof window !== "undefined"
+    ? Math.min(300, window.innerWidth - 48)
+    : 300;
 
 interface SpinWheelProps {
   items: string[];
@@ -34,6 +33,17 @@ export default function SpinWheel({ items, onResult, spinLabel = "🎡 Çevir!",
   const angleRef = useRef(0);
   const rafRef = useRef<number>(0);
   const [spinning, setSpinning] = useState(false);
+  const [SIZE, setSize] = useState(300);
+
+  useEffect(() => {
+    setSize(getSize());
+  }, []);
+
+  const CX = SIZE / 2;
+  const CY = SIZE / 2;
+  const R_OUTER = CX - 4;
+  const R_WHEEL = CX - 18;
+  const R_CENTER = 22;
 
   const drawWheel = useCallback((angle: number, isSpinning = false) => {
     const canvas = canvasRef.current;

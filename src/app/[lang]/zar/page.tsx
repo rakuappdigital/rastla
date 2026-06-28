@@ -49,6 +49,12 @@ type Phase = "idle" | "p1done" | "p2done";
 export default function ZarPage() {
   const d = useDict();
 
+  // Responsive die size
+  const [screenW, setScreenW] = useState(375);
+  useEffect(() => {
+    setScreenW(window.innerWidth);
+  }, []);
+
   // Persistent settings
   const [diceCount, setDiceCount] = useLocalStorage("rastla_zar_count", 2);
   const [playerMode, setPlayerMode] = useLocalStorage<1 | 2>("rastla_zar_players", 1);
@@ -122,7 +128,11 @@ export default function ZarPage() {
   const isDone = phase === "p2done";
   const namesOk = playerMode === 1 || (p1name.trim().length > 0 && p2name.trim().length > 0);
 
-  const DIE_SIZE = playerMode === 2 ? 62 : 80;
+  // Responsive die size — ekrana sığsın
+  const contentW = Math.min(screenW, 448) - 40;
+  const DIE_SIZE = playerMode === 2
+    ? Math.floor(Math.min(62, (contentW / 2 - 40) / diceCount))
+    : Math.floor(Math.min(80, (contentW - (diceCount - 1) * 12) / diceCount));
 
   // ── Render ──────────────────────────────────────────────────────────────────
   return (
