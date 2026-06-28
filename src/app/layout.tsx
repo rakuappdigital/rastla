@@ -4,6 +4,7 @@ import "./globals.css";
 import Nav from "@/components/Nav";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import FloatingControls from "@/components/FloatingControls";
+import NativeSplash from "@/components/NativeSplash";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 
@@ -26,6 +27,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-[var(--font-geist)] antialiased"
         style={{ background: "var(--c-bg)", color: "var(--c-text)", overflow: "hidden" }}>
         <ThemeProvider>
+          {/* Splash — scroll div dışında, position:fixed çalışır */}
+          <NativeSplash />
+
           {/* Sabit üst kontrol çubuğu — scroll dışı */}
           <div
             style={{
