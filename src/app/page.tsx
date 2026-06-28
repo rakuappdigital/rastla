@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-type Phase = "raku" | "rastla" | "done";
+type Phase = "raku" | "rastla";
 
 export default function Home() {
   const router = useRouter();
@@ -25,33 +25,18 @@ export default function Home() {
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [router]);
 
-  if (!phase) return <div style={{ background: "#0a0a0f", position: "fixed", inset: 0 }} />;
+  if (!phase) return null;
 
   return (
-    <div
-      className="fixed inset-0 flex items-center justify-center transition-opacity duration-500"
-      style={{ background: "#0a0a0f" }}
-    >
-      {phase === "raku" && (
-        <Image
-          src="/images/raku-logo.png"
-          alt="Raku"
-          width={260}
-          height={60}
-          className="object-contain"
-          priority
-        />
-      )}
-      {phase === "rastla" && (
-        <Image
-          src="/images/rastla-splash.png"
-          alt="Luckura"
-          width={280}
-          height={280}
-          className="object-contain"
-          priority
-        />
-      )}
+    <div className="fixed inset-0" style={{ background: "#ffffff", zIndex: 9999 }}>
+      <Image
+        src={phase === "raku" ? "/images/raku-logo.png" : "/images/rastla-splash.png"}
+        alt=""
+        fill
+        className="object-cover"
+        priority
+        unoptimized
+      />
     </div>
   );
 }
